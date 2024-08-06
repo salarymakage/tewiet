@@ -1,0 +1,238 @@
+* {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
+body, html {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: #f7f7f7;
+    overflow: hidden;
+}
+
+.container {
+    display: flex;
+    flex-direction: row; /* Change to row to align items horizontally */
+    justify-content: center;
+    align-items: flex-start; /* Align items to the start of the container */
+    gap: 50px; /* Added gap between video and form section */
+    text-align: center;
+    flex-wrap: wrap; /* Allow items to wrap for smaller screens */
+}
+
+.video-section, .detected-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.button-group {
+    display: flex;
+    justify-content: center;
+    gap: 10px; /* Add some space between the buttons */
+    margin-top: 20px; /* Add some margin to separate the buttons from the video feed */
+}
+
+.button-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    margin: 10px 5px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+.button-link {
+    display: inline-block;
+    width: 200px; /* Increased width for better appearance */
+    height: 50px;
+    line-height: 50px;
+    background: white;
+    color: black;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    border-radius: 25px;
+    border: 2px solid rgb(132, 132, 132);
+    text-align: center;
+    text-decoration: none;
+    transition: all 0.5s ease-in-out;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.button-link:hover {
+    background-color: rgb(132, 132, 132);
+    color: white;
+}
+
+#videoContainer {
+    position: relative;
+    width: 640px;
+    height: 360px;
+    border: 1px solid #ddd;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    border-radius: 8px;
+    background: #fff;
+    overflow: hidden;
+}
+
+#videoFeed {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+#overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: white;
+    opacity: 0.7;
+    z-index: 2;
+}
+  
+#loadingSpinner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 3;
+}
+  
+.fancy-spinner {
+    width: 5rem;
+    height: 5rem;
+    position: relative;
+}
+  
+.fancy-spinner div {
+    position: absolute;
+    width: 4rem;
+    height: 4rem;
+    border-radius: 50%;
+}
+  
+.fancy-spinner div.ring {
+    border-width: 0.5rem;
+    border-style: solid;
+    border-color: transparent;
+    animation: 2s fancy infinite alternate;
+}
+  
+.fancy-spinner div.ring:nth-child(1) {
+    border-left-color: #4CAF50; /* Assuming $bluebell is a blue color, replace with your desired color */
+    border-right-color: #4CAF50; /* Replace with your desired color */
+}
+  
+.fancy-spinner div.ring:nth-child(2) {
+    border-top-color: #4CAF50; /* Replace with your desired color */
+    border-bottom-color: #4CAF50; /* Replace with your desired color */
+    animation-delay: 1s;
+}
+  
+.fancy-spinner div.dot {
+    width: 1rem;
+    height: 1rem;
+    background: #4CAF50; /* Replace with your desired color */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+    
+@keyframes fancy {
+    to {
+        transform: rotate(360deg) scale(0.5);
+    }
+}
+
+.profile-card {
+    border: 1px solid #ddd;
+    padding: 20px;
+    border-radius: 8px;
+    background-color: #fff;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    width: 400px;
+}
+
+.detected-profile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.image-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.image-section img {
+    height: 1200px;
+    width: 1800px;
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.form-section {
+    width: 100%;
+}
+
+.form-group {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    flex: 1;
+    margin-right: 10px;
+    font-weight: bold;
+    color: #333;
+}
+
+.form-group input, .form-group select {
+    flex: 2;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-shadow: inset 0 2px 3px rgba(0,0,0,0.1);
+}
+
+.form-group input:focus, .form-group select:focus {
+    border-color: #4CAF50;
+    box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
+    outline: none;
+}

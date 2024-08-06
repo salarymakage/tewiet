@@ -1,0 +1,159 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Face Detection</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/trainstyles.css' %}">
+</head>
+<body>
+    <div class="container">
+        <div class="video-section">
+            <h1>Video Feed</h1>
+            <div id="videoContainer">
+                <img id="videoFeed" width="640" height="360" src="{% static 'img/image.jpg' %}">
+                <div id="loadingSpinner" class="spinner">
+                    <div class="ring"></div>
+                    <div class="ring"></div>
+                </div>
+            </div>
+            <div class="button-group">
+                <button id="startVideo">Start Video</button>
+                <button id="stopVideo">Stop Video</button>
+            </div>
+        </div>
+        
+        <div class="detected-section">
+            <h1>Detected Student</h1>
+            <form id="trainingForm" action="{% url 'train' %}" method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="fname">First Name</label>
+                    <input type="text" name="fname" id="fname" required>
+                </div>
+        
+                <div class="form-group">
+                    <label for="lname">Last Name</label>
+                    <input type="text" name="lname" id="lname" required>
+                </div>
+        
+                <div class="form-group">
+                    <label for="gender">Gender</label>
+                    <select name="gender" id="gender" required>
+                        <option value="M">Male</option>
+                        <option value="F">Female</option>
+                        <option value="O">Other</option>
+                    </select>
+                </div>
+        
+                <div class="form-group">
+                    <label for="medical-condition">Medical Condition</label>
+                    <input type="text" name="medical-condition" id="medical-condition" required>
+                </div>
+        
+                <div class="form-group">
+                    <label for="address">Address</label>
+                    <select name="address" id="address" required>
+                        <option value="Phnom Penh">Phnom Penh</option>
+                        <option value="Banteay Meanchey">Banteay Meanchey</option>
+                        <option value="Battambang">Battambang</option>
+                        <option value="Kampong Cham">Kampong Cham</option>
+                        <option value="Kampong Chhnang">Kampong Chhnang</option>
+                        <option value="Kampong Speu">Kampong Speu</option>
+                        <option value="Kampong Thom">Kampong Thom</option>
+                        <option value="Kampot">Kampot</option>
+                        <option value="Kandal">Kandal</option>
+                        <option value="Koh Kong">Koh Kong</option>
+                        <option value="Kratié">Kratié</option>
+                        <option value="Mondulkiri">Mondulkiri</option>
+                        <option value="Oddar Meanchey">Oddar Meanchey</option>
+                        <option value="Pailin">Pailin</option>
+                        <option value="Preah Sihanouk">Preah Sihanouk</option>
+                        <option value="Preah Vihear">Preah Vihear</option>
+                        <option value="Prey Veng">Prey Veng</option>
+                        <option value="Pursat">Pursat</option>
+                        <option value="Ratanakiri">Ratanakiri</option>
+                        <option value="Siem Reap">Siem Reap</option>
+                        <option value="Stung Treng">Stung Treng</option>
+                        <option value="Svay Rieng">Svay Rieng</option>
+                        <option value="Takeo">Takeo</option>
+                        <option value="Tboung Khmum">Tboung Khmum</option>
+                    </select>
+                </div>
+        
+                <div class="form-group">
+                    <label for="emergency-contact">Emergency Contact</label>
+                    <input type="number" name="emergency-contact" id="emergency-contact" required>
+                </div>
+        
+                <div class="submit">
+                    <button type="submit" id="submitForm">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="button-container">
+        <a class="button-link" href="{% url 'main_page' %}">Go to Main Page</a>
+    </div>
+
+    <script>
+        document.getElementById('startVideo').addEventListener('click', function() {
+            document.getElementById('videoFeed').src = "{% url 'video_feed' %}";
+            document.getElementById('loadingSpinner').style.display = 'none';
+            document.getElementById('videoFeed').style.display = 'block';
+        });
+
+        document.getElementById('stopVideo').addEventListener('click', function() {
+            document.getElementById('loadingSpinner').style.display = 'flex';
+            document.getElementById('videoFeed').style.display = 'none';
+            fetch("{% url 'stop_camera' %}").then(() => {
+                document.getElementById('videoFeed').src = "{% static 'img/image.jpg' %}";
+            });
+        });
+
+        document.getElementById('videoFeed').addEventListener('error', function() {
+            document.getElementById('loadingSpinner').style.display = 'flex';
+            document.getElementById('videoFeed').style.display = 'none';
+        });
+
+        if (!document.getElementById('videoFeed').complete || document.getElementById('videoFeed').naturalWidth === 0) {
+            document.getElementById('loadingSpinner').style.display = 'flex';
+            document.getElementById('videoFeed').style.display = 'none';
+        }
+
+        function updateStudentList() {
+            fetch("{% url 'student_list' %}")
+                .then(response => response.json())
+                .then(data => {
+                    const detectedProfile = document.getElementById('detected-student-profile');
+                    const fnameField = document.getElementById('fname');
+                    const lnameField = document.getElementById('lname');
+                    const genderField = document.getElementById('gender');
+                    const medicalConditionField = document.getElementById('medical-condition');
+                    const addressField = document.getElementById('address');
+                    const emergencyContactField = document.getElementById('emergency-contact');
+
+                    if (data.detected_student) {
+                        fnameField.value = data.detected_student[1];
+                        lnameField.value = data.detected_student[2];
+                        genderField.value = data.detected_student[3];
+                        medicalConditionField.value = data.detected_student[4];
+                        addressField.value = data.detected_student[5];
+                        emergencyContactField.value = data.detected_student[6];
+                    } else {
+                        fnameField.value = '';
+                        lnameField.value = '';
+                        genderField.value = '';
+                        medicalConditionField.value = '';
+                        addressField.value = '';
+                        emergencyContactField.value = '';
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        setInterval(updateStudentList, 3000); // Update the list every 3 seconds
+    </script>
+</body>
+</html>
+
+

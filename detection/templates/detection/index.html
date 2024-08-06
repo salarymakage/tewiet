@@ -1,0 +1,121 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Face Recognition</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+
+    <div class="container">
+        <div class="video-section">
+            <h1>Video Feed</h1>
+            <div id="videoContainer">
+                <img id="videoFeed" width="1200" height="1800" src="{% static 'img/image.jpg' %}">
+                <div id="loadingSpinner" style="display: none;">
+                    <div class="fancy-spinner">
+                        <div class="ring"></div>
+                        <div class="ring"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="button-group">
+                <button id="startVideo">Start Video</button>
+                <button id="stopVideo">Stop Video</button>
+            </div>
+        </div>
+        
+        <div class="detected-section">
+            <h1>Detected Student</h1>
+            <div id="detected-student-profile" class="profile-card">
+                <div class="image-section">
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSuaxuCl-tyOMjfTNy-jlX0xF-qKWybFP8AhA&usqp=CAU" alt="Profile Image">
+                </div>
+                <div class="form-section">
+                    <form action="">
+                        <div class="form-group">
+                            <label for="id">ID</label>
+                            <input type="text" name="id" id="id" value="" readonly>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="fname">First Name</label>
+                            <input type="text" name="fname" id="fname" value="" readonly>
+                        </div>
+                          
+                        <div class="form-group">
+                            <label for="lname">Last Name</label>
+                            <input type="text" name="lname" id="lname" value="" readonly>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="gender">Gender</label>
+                            <input type="text" name="gender" id="gender" value="" readonly>
+                        </div>
+                
+                        <div class="form-group">
+                            <label for="medical-condition">Medical Condition</label>
+                            <input type="text" name="medical-condition" id="medical-condition" value="" readonly>
+                        </div>
+                
+                        <div class="form-group">
+                            <label for="address">Address</label>
+                            <input type="text" name="address" id="address" value="" readonly>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="button-container">
+        <a class="button-link" href="{% url 'main_page' %}">Go to Main Page</a>
+    </div>
+
+    <script>
+        document.getElementById('startVideo').addEventListener('click', function() {
+            document.getElementById('videoFeed').src = "{% url 'video_feed' %}";
+            document.getElementById('loadingSpinner').style.display = 'none';
+            document.getElementById('videoFeed').style.display = 'block';
+        });
+    
+        document.getElementById('stopVideo').addEventListener('click', function() {
+            document.getElementById('loadingSpinner').style.display = 'flex';
+            document.getElementById('videoFeed').style.display = 'none';
+            fetch("{% url 'stop_camera' %}").then(() => {
+                document.getElementById('videoFeed').src = "{% static 'img/image.jpg' %}";
+            });
+        });
+    
+        document.getElementById('videoFeed').addEventListener('error', function() {
+            document.getElementById('loadingSpinner').style.display = 'flex';
+            document.getElementById('videoFeed').style.display = 'none';
+        });
+    
+        if (!document.getElementById('videoFeed').complete || document.getElementById('videoFeed').naturalWidth === 0) {
+            document.getElementById('loadingSpinner').style.display = 'flex';
+            document.getElementById('videoFeed').style.display = 'none';
+        }
+    
+        function updateDetectedStudent() {
+            fetch("{% url 'detected_student_info' %}")
+                .then(response => response.json())
+                .then(data => {
+                    if (data.Error) {
+                        console.error(data.Error);
+                        return;
+                    }
+                    document.getElementById('id').value = data.id;
+                    document.getElementById('fname').value = data.first_name;
+                    document.getElementById('lname').value = data.last_name;
+                    document.getElementById('gender').value = data.gender;
+                    document.getElementById('medical-condition').value = data.medical_condition;
+                    document.getElementById('address').value = data.address;
+                })
+                .catch(error => console.error('Error:', error));
+        }
+    
+        setInterval(updateDetectedStudent, 3000);
+    </script>
+    
+</body>
+</html>

@@ -1,0 +1,16 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Main Page</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/mainstyles.css' %}">
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome to Hospital Management System</h1>
+        <a class="button-link" href="{% url 'index' %}">Go to Recognition</a>
+        <a class="button-link" href="{% url 'train' %}">Go to Train</a>
+        <a class="button-link" href="{% url 'student_list' %}">Go to Patients List</a> 
+    </div>
+</body>
+</html>
